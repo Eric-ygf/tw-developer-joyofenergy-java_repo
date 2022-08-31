@@ -14,6 +14,10 @@ java {
 }
 
 repositories {
+    maven {
+        name 'Alibaba repo'
+        url 'https://maven.aliyun.com/nexus/content/groups/public/'
+    }
     mavenCentral()
 }
 
