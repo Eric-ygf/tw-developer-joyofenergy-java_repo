@@ -26,7 +26,8 @@ public class PricePlanTest {
 
     @Test
     public void shouldReturnTheBasePriceGivenAnOrdinaryDateTime() throws Exception {
-        LocalDateTime normalDateTime = LocalDateTime.of(2017, Month.AUGUST, 31, 12, 0, 0);
+//        LocalDateTime normalDateTime = LocalDateTime.of(2017, Month.AUGUST, 31, 12, 0, 0);//周四
+        LocalDateTime normalDateTime = LocalDateTime.of(2017, Month.AUGUST, 30, 12, 0, 0);//别踩到周三就行了
         PricePlan.PeakTimeMultiplier peakTimeMultiplier = new PricePlan.PeakTimeMultiplier(DayOfWeek.WEDNESDAY, BigDecimal.TEN);
         PricePlan pricePlan = new PricePlan(null, null, BigDecimal.ONE, singletonList(peakTimeMultiplier));
 

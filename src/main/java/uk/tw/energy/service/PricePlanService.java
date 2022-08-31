@@ -16,7 +16,11 @@ import java.util.stream.Collectors;
 @Service
 public class PricePlanService {
 
-    private final List<PricePlan> pricePlans;
+    /**
+     * 现有的三种计价方案，一个公司一种方案
+     * 类似于存储在db中
+     */
+    private final List<PricePlan> pricePlans;//SeedingApplicationDataConfiguration.pricePlans生成
     private final MeterReadingService meterReadingService;
 
     public PricePlanService(List<PricePlan> pricePlans, MeterReadingService meterReadingService) {
