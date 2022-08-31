@@ -9,7 +9,7 @@ public class PricePlan {
 
     private final String energySupplier;
     private final String planName;
-    private final BigDecimal unitRate; // unit price per kWh
+    private final BigDecimal unitRate; // unit price per kWh 单价
     private final List<PeakTimeMultiplier> peakTimeMultipliers;
 
     public PricePlan(String planName, String energySupplier, BigDecimal unitRate, List<PeakTimeMultiplier> peakTimeMultipliers) {
@@ -31,6 +31,10 @@ public class PricePlan {
         return unitRate;
     }
 
+    /*
+    取得电价
+    电价并不是单纯的unitRate，而是基于星期几，可能有个乘数
+     */
     public BigDecimal getPrice(LocalDateTime dateTime) {
         return peakTimeMultipliers.stream()
                 .filter(multiplier -> multiplier.dayOfWeek.equals(dateTime.getDayOfWeek()))

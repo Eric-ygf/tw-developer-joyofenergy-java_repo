@@ -34,11 +34,14 @@ public class SeedingApplicationDataConfiguration {
         return pricePlans;
     }
 
+    /**
+     * 生成了每个表的读数，20个采样值
+     */
     @Bean
     public Map<String, List<ElectricityReading>> perMeterElectricityReadings() {
         final Map<String, List<ElectricityReading>> readings = new HashMap<>();
         final ElectricityReadingsGenerator electricityReadingsGenerator = new ElectricityReadingsGenerator();
-        smartMeterToPricePlanAccounts()
+        smartMeterToPricePlanAccounts()//你所需要的各个电表的id是从既有的Map中拿到的，并没有定义变量
                 .keySet()
                 .forEach(smartMeterId -> readings.put(smartMeterId, electricityReadingsGenerator.generate(20)));
         return readings;
