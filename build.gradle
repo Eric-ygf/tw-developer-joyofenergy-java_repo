@@ -15,15 +15,15 @@ java {
 
 repositories {
     mavenLocal()
-    maven {
-        allowInsecureProtocol true
-        credentials {
-            username 'developer'
-            password '123456'
-        }
-        name "ygf-nexus-group"
-        url "http://nexus.ygf.org:8081/nexus/content/groups/ygf-nexus-group/"
-    }
+//    maven {
+//        allowInsecureProtocol true
+//        credentials {
+//            username 'developer'
+//            password '123456'
+//        }
+//        name "ygf-nexus-group"
+//        url "http://nexus.ygf.org:8081/nexus/content/groups/ygf-nexus-group/"
+//    }
     maven {
         name "Alibaba"
         url "https://maven.aliyun.com/repository/public/"
