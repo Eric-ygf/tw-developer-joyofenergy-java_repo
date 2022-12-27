@@ -6,7 +6,7 @@ import java.time.Instant;
 public class ElectricityReading {
 
     private Instant time;
-    private BigDecimal reading; // kW
+    private BigDecimal reading; // kW  TODO 耗电量似乎应该是kwh
 
     public ElectricityReading() { }
 

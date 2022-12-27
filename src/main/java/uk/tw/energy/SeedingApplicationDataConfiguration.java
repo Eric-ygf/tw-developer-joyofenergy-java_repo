@@ -25,6 +25,10 @@ public class SeedingApplicationDataConfiguration {
     private static final String RENEWABLES_PRICE_PLAN_ID = "price-plan-1";
     private static final String STANDARD_PRICE_PLAN_ID = "price-plan-2";
 
+    /**
+     * 全部的价格计划
+     * @return
+     */
     @Bean
     public List<PricePlan> pricePlans() {
         final List<PricePlan> pricePlans = new ArrayList<>();
@@ -35,13 +39,14 @@ public class SeedingApplicationDataConfiguration {
     }
 
     /**
-     * 生成了每个表的读数，20个采样值
+     * 每个电表生成20个读数
+     * @return
      */
     @Bean
     public Map<String, List<ElectricityReading>> perMeterElectricityReadings() {
         final Map<String, List<ElectricityReading>> readings = new HashMap<>();
         final ElectricityReadingsGenerator electricityReadingsGenerator = new ElectricityReadingsGenerator();
-        smartMeterToPricePlanAccounts()//你所需要的各个电表的id是从既有的Map中拿到的，并没有定义变量
+        smartMeterToPricePlanAccounts()
                 .keySet()
                 .forEach(smartMeterId -> readings.put(smartMeterId, electricityReadingsGenerator.generate(20)));
         return readings;

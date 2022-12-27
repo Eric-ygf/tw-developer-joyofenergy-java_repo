@@ -17,10 +17,9 @@ import java.util.stream.Collectors;
 public class PricePlanService {
 
     /**
-     * 现有的三种计价方案，一个公司一种方案
-     * 类似于存储在db中
+     * 全部的价格计划
      */
-    private final List<PricePlan> pricePlans;//SeedingApplicationDataConfiguration.pricePlans生成
+    private final List<PricePlan> pricePlans;
     private final MeterReadingService meterReadingService;
 
     public PricePlanService(List<PricePlan> pricePlans, MeterReadingService meterReadingService) {
@@ -28,6 +27,11 @@ public class PricePlanService {
         this.meterReadingService = meterReadingService;
     }
 
+    /**
+     * 针对一个电表，呈现在每个价格计划下，此电表的花销
+     * @param smartMeterId
+     * @return
+     */
     public Optional<Map<String, BigDecimal>> getConsumptionCostOfElectricityReadingsForEachPricePlan(String smartMeterId) {
         Optional<List<ElectricityReading>> electricityReadings = meterReadingService.getReadings(smartMeterId);
 

@@ -9,11 +9,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
-//本类类似于一个util吧...
+
 public class ElectricityReadingsGenerator {
 
     /**
-     * 生成一组(number个)电表读数，每10秒一个，从过去直到now
+     * mock出number个从过去到现在的电表读数
+     * @param number
+     * @return
      */
     public List<ElectricityReading> generate(int number) {
         List<ElectricityReading> readings = new ArrayList<>();
@@ -21,9 +23,9 @@ public class ElectricityReadingsGenerator {
 
         Random readingRandomiser = new Random();
         for (int i = 0; i < number; i++) {
-            double positiveRandomValue = Math.abs(readingRandomiser.nextGaussian());//高斯分布即标准正态分布，均值为0，方差为1
+            double positiveRandomValue = Math.abs(readingRandomiser.nextGaussian());
             BigDecimal randomReading = BigDecimal.valueOf(positiveRandomValue).setScale(4, RoundingMode.CEILING);
-            ElectricityReading electricityReading = new ElectricityReading(now.minusSeconds(i * 10), randomReading);//10秒一个
+            ElectricityReading electricityReading = new ElectricityReading(now.minusSeconds(i * 10), randomReading);
             readings.add(electricityReading);
         }
 
