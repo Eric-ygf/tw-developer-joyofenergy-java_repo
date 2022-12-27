@@ -28,7 +28,7 @@ public class PricePlanService {
     }
 
     /**
-     * 针对一个电表，呈现在每个价格计划下，此电表的花销
+     * 针对一个电表，呈现在每个价格计划下，此电表的花费
      * @param smartMeterId
      * @return
      */
@@ -43,14 +43,25 @@ public class PricePlanService {
                 Collectors.toMap(PricePlan::getPlanName, t -> calculateCost(electricityReadings.get(), t))));
     }
 
+    /**
+     * 基于一组读数，价格计划，计算出总共花费
+     * @param electricityReadings
+     * @param pricePlan
+     * @return
+     */
     private BigDecimal calculateCost(List<ElectricityReading> electricityReadings, PricePlan pricePlan) {
         BigDecimal average = calculateAverageReading(electricityReadings);
         BigDecimal timeElapsed = calculateTimeElapsed(electricityReadings);
 
-        BigDecimal averagedCost = average.divide(timeElapsed, RoundingMode.HALF_UP);
+        BigDecimal averagedCost = average.divide(timeElapsed, RoundingMode.HALF_UP);//FIXME 计算平均耗能，应该是乘法吧？
         return averagedCost.multiply(pricePlan.getUnitRate());
     }
 
+    /**
+     * 计算一组读数的平均值
+     * @param electricityReadings
+     * @return
+     */
     private BigDecimal calculateAverageReading(List<ElectricityReading> electricityReadings) {
         BigDecimal summedReadings = electricityReadings.stream()
                 .map(ElectricityReading::getReading)
@@ -59,6 +70,11 @@ public class PricePlanService {
         return summedReadings.divide(BigDecimal.valueOf(electricityReadings.size()), RoundingMode.HALF_UP);
     }
 
+    /**
+     * 计算得到这组读数总共耗费的时间（in hour）
+     * @param electricityReadings
+     * @return
+     */
     private BigDecimal calculateTimeElapsed(List<ElectricityReading> electricityReadings) {
         ElectricityReading first = electricityReadings.stream()
                 .min(Comparator.comparing(ElectricityReading::getTime))

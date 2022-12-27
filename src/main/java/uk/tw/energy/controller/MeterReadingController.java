@@ -25,6 +25,11 @@ public class MeterReadingController {
         this.meterReadingService = meterReadingService;
     }
 
+    /**
+     * 存储（记录）一组上报上来的读数
+     * @param meterReadings
+     * @return
+     */
     @PostMapping("/store")
     public ResponseEntity storeReadings(@RequestBody MeterReadings meterReadings) {
         if (!isMeterReadingsValid(meterReadings)) {
@@ -41,6 +46,11 @@ public class MeterReadingController {
                 && electricityReadings != null && !electricityReadings.isEmpty();
     }
 
+    /**
+     * 读取一个电表的读数
+     * @param smartMeterId
+     * @return
+     */
     @GetMapping("/read/{smartMeterId}")
     public ResponseEntity readReadings(@PathVariable String smartMeterId) {
         Optional<List<ElectricityReading>> readings = meterReadingService.getReadings(smartMeterId);

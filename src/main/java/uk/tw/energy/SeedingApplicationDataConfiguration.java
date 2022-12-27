@@ -52,6 +52,10 @@ public class SeedingApplicationDataConfiguration {
         return readings;
     }
 
+    /**
+     * 各个电表所使用的价格计划
+     * @return
+     */
     @Bean
     public Map<String, String> smartMeterToPricePlanAccounts() {
         final Map<String, String> smartMeterToPricePlanAccounts = new HashMap<>();

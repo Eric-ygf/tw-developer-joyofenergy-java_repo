@@ -31,6 +31,13 @@ public class PricePlanComparatorController {
         this.accountService = accountService;
     }
 
+    /**
+     * 对比内容：
+     * 该电表当前使用的价格计划
+     * 在每个价格计划下，此电表的花销
+     * @param smartMeterId
+     * @return
+     */
     @GetMapping("/compare-all/{smartMeterId}")
     public ResponseEntity<Map<String, Object>> calculatedCostForEachPricePlan(@PathVariable String smartMeterId) {
         String pricePlanId = accountService.getPricePlanIdForSmartMeterId(smartMeterId);
@@ -50,6 +57,12 @@ public class PricePlanComparatorController {
                 : ResponseEntity.notFound().build();
     }
 
+    /**
+     * 按照花费的从低到高，推荐 limit-1 个价格计划及其花费
+     * @param smartMeterId
+     * @param limit
+     * @return
+     */
     @GetMapping("/recommend/{smartMeterId}")
     public ResponseEntity<List<Map.Entry<String, BigDecimal>>> recommendCheapestPricePlans(@PathVariable String smartMeterId,
                                                                                            @RequestParam(value = "limit", required = false) Integer limit) {
