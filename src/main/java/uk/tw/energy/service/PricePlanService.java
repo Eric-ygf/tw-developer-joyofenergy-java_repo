@@ -98,7 +98,7 @@ public class PricePlanService {
      * @return
      */
     private BigDecimal calculateCostConsideringPeak(List<ElectricityReading> electricityReadings, PricePlan pricePlan) {
-        /** 分组 by 周几 */
+        /** 分组 by 日 */
         Map<LocalDate, List<ElectricityReading>> electricityReadingsByDay = electricityReadings.stream()
                 .collect(Collectors.groupingBy(electricityReading ->
                         LocalDateTime.ofInstant(electricityReading.getTime(), ZoneId.systemDefault()).toLocalDate()
