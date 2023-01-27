@@ -82,4 +82,30 @@ public class PricePlanComparatorController {
 
         return ResponseEntity.ok(recommendations);
     }
+
+    /**
+     * 对比内容：
+     * 该电表当前使用的价格计划
+     * 在每个价格计划下，此电表的花销(考虑了peak定价的情况)
+     * @param smartMeterId
+     * @return
+     */
+    @GetMapping("/compare-all-considering-peak/{smartMeterId}")
+    public ResponseEntity<Map<String, Object>> calculatedCostForEachPricePlanPeak(@PathVariable String smartMeterId) {
+        String pricePlanId = accountService.getPricePlanIdForSmartMeterId(smartMeterId);
+        Optional<Map<String, BigDecimal>> consumptionsForPricePlans =
+                pricePlanService.getConsumptionCostOfElectricityReadingsForEachPricePlanConsideringPeak(smartMeterId);
+
+        if (!consumptionsForPricePlans.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Map<String, Object> pricePlanComparisons = new HashMap<>();
+        pricePlanComparisons.put(PRICE_PLAN_ID_KEY, pricePlanId);
+        pricePlanComparisons.put(PRICE_PLAN_COMPARISONS_KEY, consumptionsForPricePlans.get());
+
+        return consumptionsForPricePlans.isPresent()
+                ? ResponseEntity.ok(pricePlanComparisons)
+                : ResponseEntity.notFound().build();
+    }
 }

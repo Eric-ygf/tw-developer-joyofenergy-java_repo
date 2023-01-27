@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class ElectricityReadingsGenerator {
 
@@ -20,6 +21,7 @@ public class ElectricityReadingsGenerator {
     public List<ElectricityReading> generate(int number) {
         List<ElectricityReading> readings = new ArrayList<>();
         Instant now = Instant.now();
+//        Instant now = Instant.now().minusMillis(TimeUnit.DAYS.toMillis(1));
 
         Random readingRandomiser = new Random();
         for (int i = 0; i < number; i++) {

@@ -7,6 +7,7 @@ import uk.tw.energy.domain.PricePlan;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Comparator;
@@ -43,8 +44,6 @@ public class PricePlanService {
 
         return Optional.of(pricePlans.stream().collect(
                 Collectors.toMap(PricePlan::getPlanName, t -> calculateCost(electricityReadings.get(), t))));
-//        return Optional.of(pricePlans.stream().collect(
-//                Collectors.toMap(PricePlan::getPlanName, t -> calculateCost1(electricityReadings.get(), t))));
     }
 
     /**
@@ -57,36 +56,9 @@ public class PricePlanService {
         BigDecimal average = calculateAverageReading(electricityReadings);
         BigDecimal timeElapsed = calculateTimeElapsed(electricityReadings);
 
-        BigDecimal averagedCost = average.divide(timeElapsed, RoundingMode.HALF_UP);//FIXME  计算平均耗能，应该是乘法吧？平均功率乘以用电时长
+//        BigDecimal averagedCost = average.divide(timeElapsed, RoundingMode.HALF_UP);//FIXME  计算平均耗能，应该是乘法吧？平均功率乘以用电时长
+        BigDecimal averagedCost = average.multiply(timeElapsed);
         return averagedCost.multiply(pricePlan.getUnitRate());
-    }
-
-    /**
-     * 基于一组读数，价格计划，计算出总共花费（考虑高峰定价）
-     *
-     * @param electricityReadings
-     * @param pricePlan
-     * @return
-     */
-    private BigDecimal calculateCost1(List<ElectricityReading> electricityReadings, PricePlan pricePlan) {
-        /** 分组 by 日 */
-        Map<LocalDateTime, List<ElectricityReading>> electricityReadingsByDay = electricityReadings.stream()
-                .collect(Collectors.groupingBy(electricityReading ->
-                        LocalDateTime.ofInstant(electricityReading.getTime(), ZoneId.systemDefault())
-                ));
-
-        /** 按日计算钱，再加总 */
-        BigDecimal totalMoney = electricityReadingsByDay.entrySet()
-                .stream()
-                .map(entry -> {
-                    BigDecimal average = calculateAverageReading(entry.getValue());
-                    BigDecimal timeElapsed = calculateTimeElapsed(entry.getValue());
-
-                    BigDecimal averagedCost = average.multiply(timeElapsed);
-                    return averagedCost.multiply(pricePlan.getPrice(entry.getKey()));
-                })
-                .reduce(new BigDecimal(0), (moneyday1, moneyday2) -> moneyday1.add(moneyday2));
-        return totalMoney;
     }
 
     /**
@@ -116,6 +88,50 @@ public class PricePlanService {
                 .get();
 
         return BigDecimal.valueOf(Duration.between(first.getTime(), last.getTime()).getSeconds() / 3600.0);
+    }
+
+    /**
+     * 基于一组读数，价格计划，计算出总共花费（考虑高峰定价）
+     *
+     * @param electricityReadings
+     * @param pricePlan
+     * @return
+     */
+    private BigDecimal calculateCostConsideringPeak(List<ElectricityReading> electricityReadings, PricePlan pricePlan) {
+        /** 分组 by 日 */
+        Map<LocalDate, List<ElectricityReading>> electricityReadingsByDay = electricityReadings.stream()
+                .collect(Collectors.groupingBy(electricityReading ->
+                        LocalDateTime.ofInstant(electricityReading.getTime(), ZoneId.systemDefault()).toLocalDate()
+                ));
+
+        /** 按日计算钱，再加总 */
+        BigDecimal totalMoney = electricityReadingsByDay.entrySet()
+                .stream()
+                .map(entry -> {
+                    BigDecimal average = calculateAverageReading(entry.getValue());
+                    BigDecimal timeElapsed = calculateTimeElapsed(entry.getValue());
+
+                    BigDecimal averagedCost = average.multiply(timeElapsed);
+                    return averagedCost.multiply(pricePlan.getPrice(entry.getKey()));
+                })
+                .reduce(new BigDecimal(0), (moneyday1, moneyday2) -> moneyday1.add(moneyday2));
+        return totalMoney;
+    }
+
+    /**
+     * 针对一个电表，呈现在每个价格计划下，此电表的实际花费（考虑了高峰时刻后）
+     * @param smartMeterId
+     * @return
+     */
+    public Optional<Map<String, BigDecimal>> getConsumptionCostOfElectricityReadingsForEachPricePlanConsideringPeak(String smartMeterId) {
+        Optional<List<ElectricityReading>> electricityReadings = meterReadingService.getReadings(smartMeterId);
+
+        if (!electricityReadings.isPresent()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(pricePlans.stream().collect(
+                Collectors.toMap(PricePlan::getPlanName, t -> calculateCostConsideringPeak(electricityReadings.get(), t))));
     }
 
 }

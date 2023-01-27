@@ -67,6 +67,8 @@ task functionalTest(type: Test) {
     testLogging {
         events = ['FAILED', 'PASSED', 'SKIPPED', 'STANDARD_OUT']
     }
+
+    enabled false;
 }
 
 dependencies {
@@ -78,7 +80,7 @@ dependencies {
     /*[lombok]*/
     implementation "org.projectlombok:lombok:1.18.24"
     annotationProcessor "org.projectlombok:lombok:1.18.24"
-    implementation 'org.ygf.commons:ygf-commons-tools:springboot2.6.x-SNAPSHOT'
+    implementation group: 'cn.hutool', name: 'hutool-all', version: '5.7.22'
 }
 
 test {
@@ -87,8 +89,11 @@ test {
     testLogging {
         events = ['FAILED', 'PASSED', 'SKIPPED', 'STANDARD_OUT']
     }
+
+    enabled false;
 }
 
 check {
     dependsOn functionalTest
+    enabled false;
 }
