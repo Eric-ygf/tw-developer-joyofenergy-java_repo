@@ -90,7 +90,7 @@ test {
         events = ['FAILED', 'PASSED', 'SKIPPED', 'STANDARD_OUT']
     }
 
-    enabled false;
+    enabled true;
 }
 
 check {
