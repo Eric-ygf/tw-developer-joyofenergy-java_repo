@@ -98,7 +98,7 @@ public class PricePlanService {
      * @return
      */
     private BigDecimal calculateCostConsideringPeak(List<ElectricityReading> electricityReadings, PricePlan pricePlan) {
-        /** 分组 by 日 */
+        /** 分组 by 周几 */
         Map<LocalDate, List<ElectricityReading>> electricityReadingsByDay = electricityReadings.stream()
                 .collect(Collectors.groupingBy(electricityReading ->
                         LocalDateTime.ofInstant(electricityReading.getTime(), ZoneId.systemDefault()).toLocalDate()
@@ -112,7 +112,7 @@ public class PricePlanService {
                     BigDecimal timeElapsed = calculateTimeElapsed(entry.getValue());
 
                     BigDecimal averagedCost = average.multiply(timeElapsed);
-                    return averagedCost.multiply(pricePlan.getPrice(entry.getKey()));
+                    return averagedCost.multiply(pricePlan.getPrice(entry.getKey().atTime(0,0)));//因为getPrice里面要的是周几，因此时间不用非常具体，来个0 0就可以了
                 })
                 .reduce(new BigDecimal(0), (moneyday1, moneyday2) -> moneyday1.add(moneyday2));
         return totalMoney;

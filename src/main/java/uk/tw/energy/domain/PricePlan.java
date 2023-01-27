@@ -44,18 +44,6 @@ public class PricePlan {
                 .orElse(unitRate);
     }
 
-    public BigDecimal getPrice(LocalDate localdate) {
-        return peakTimeMultipliers.stream()
-                //基于dateTime是周几，找出那一天的峰值乘数
-                .filter(multiplier -> multiplier.dayOfWeek.equals(localdate.getDayOfWeek()))
-                .findFirst()
-                //基于dateTime是周几，找出那一天的峰值乘数
-                .map(multiplier -> {
-                    return unitRate.multiply(multiplier.multiplier);
-                })
-                .orElse(unitRate);
-    }
-
 
     /**
      * 峰值乘数
