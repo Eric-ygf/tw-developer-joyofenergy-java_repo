@@ -3,6 +3,7 @@ package uk.tw.energy.timecls;
 import org.junit.jupiter.api.Test;
 
 import java.time.*;
+import java.util.Date;
 
 public class Jdk8TimeClsTest {
     /**
@@ -30,6 +31,17 @@ public class Jdk8TimeClsTest {
         Instant end = Instant.parse("1969-09-28T03:06:17Z");
         long dayCount = Duration.between(start, end).getSeconds() / (24 * 3600);
         System.out.println(dayCount + "天(using Instant)");
+    }
+
+    /**
+     * Date -> Instance -> LocalDatetime
+     */
+    @Test
+    public void test7(){
+        Date date = new Date(123, 0, 27, 15, 30, 12);
+        Instant instant = date.toInstant();
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.of("Asia/Shanghai"));
+        System.out.println(localDateTime);
     }
 
     /**
